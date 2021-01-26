@@ -52,3 +52,62 @@ Admin:
 Note: The examination will be in English.
 2
 -}
+
+{-
+Part 1. TERM should have constructors for
+• the Empty set
+• the one-element set constructor Singleton
+• Union, and Intersection
+– you can also try Powerset
+• set-valued variables (Var :: v → TERM v)
+PRED should have contructors for
+• the two predicates Elem, Subset
+• the logical connectives And, Or , Implies, Not
+-}
+{-# LANGUAGE GADTs #-}
+import Data.List
+
+data TERM v where 
+  Empty         :: TERM v
+  Singleton     :: TERM v -> TERM v
+  Union         :: TERM v -> TERM v -> TERM v
+  Intersection  :: TERM v -> TERM v -> TERM v
+  Value         :: v -> TERM v
+ deriving Show
+{-
+instance Arbitrary Term v where
+ arbitrary = do
+   r <- 
+ -}
+ 
+data PRED v where
+  Elem      :: v -> TERM v -> PRED v
+  Subset    :: TERM v -> TERM v -> PRED v
+  And       :: PRED v -> PRED v -> PRED v
+  Or        :: PRED v -> PRED v -> PRED v
+  Implies   :: PRED v -> PRED v -> PRED v
+  Not       :: PRED v -> PRED v
+
+newtype Set = S [Set] deriving (Eq,Show)
+setAsList :: Set -> [Set]
+setAsList (S lst) = lst
+
+type Env var dom = [(var,dom)]
+
+--PART 2.eval
+eval :: (Eq v) => (Env v Set) -> TERM v -> Set
+eval env (Empty)                = S []
+eval env (Singleton t)          = S [eval env t]
+eval env (Union t1 t2)          = S $ nub $ [eval env t1]++[eval env t2]
+eval env (Intersection t1 t2)   = S $ filter (\x -> x `elem` list2) list1
+ where 
+  list1 = [eval env t1]
+  list2 = [eval env t2]
+eval env (Value name)           = head [set | (varId,set)<-env, varId==name]
+
+--PART 2.check
+--check :: (Eq v) => (Env v Set) -> PRED v -> Bool
+--FUNKAR INTE
+--check env (Elem v t) = elem (S v) $ setAsList (eval env t)
+
+

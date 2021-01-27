@@ -90,6 +90,9 @@ setAsList (S lst) = lst
 
 type Env var dom = [(var,dom)]
 
+getFromEnv :: (Eq v) => (Env v x) -> v -> x
+getFromEnv env v = head [envSet | (varId,envSet)<-env, varId==v]
+
 --PART 2.eval
 eval :: (Eq v) => (Env v Set) -> TERM v -> Set
 eval env (Empty)                = S []
@@ -103,11 +106,10 @@ eval env (Intersection t1 t2)   = S $ filter (\x -> x `elem` list2) list1
  where 
   list1 = setAsList $ eval env t1
   list2 = setAsList $ eval env t2
-eval env (Value name)           = head [set | (varId,set)<-env, varId==name] --get value from env
+eval env (Value name)           = getFromEnv env name
 
 --PART 2.check
-getFromEnv :: (Eq v) => (Env v x) -> v -> x
-getFromEnv env v = head [envSet | (varId,envSet)<-env, varId==v]
+
 
 
 (-->) :: Bool -> Bool -> Bool

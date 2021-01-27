@@ -138,7 +138,7 @@ vonNeumann n = Union child (Singleton child)
  where child = vonNeumann (n-1)
 
 claim1 :: Integer -> Integer -> Bool
-claim1 n1 n2 = (n1 <= n2) --> (check [] ((vonNeumann n1) `Subset` (vonNeumann n1)))
+claim1 n1 n2 = (n1 <= n2) --> (check [] ((vonNeumann n1) `Subset` (vonNeumann n2)))
 
 claim2 n = (eval [] $ vonNeumann n) == set
  where set = S $ map (\x -> eval [] $ vonNeumann x) [0..(n-1)]

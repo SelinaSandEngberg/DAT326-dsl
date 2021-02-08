@@ -2,7 +2,6 @@
 import Data.List
 import Test.QuickCheck
 
-
 -- Part 1
 
 data TERM v where 
@@ -25,7 +24,10 @@ data PRED v where
 -- Part 2
 
 newtype Set = S [Set]
-    deriving (Eq,Show)
+    deriving (Show)
+instance Eq Set where
+    (==) s1 s2 = all (==[]) [l1\\l2, l2\\l1]
+        where l1 = setAsList s1; l2 = setAsList s2
 
 setAsList :: Set -> [Set]
 setAsList (S lst) = lst
